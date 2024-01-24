@@ -51,12 +51,15 @@ function App() {
   }, [selectedOrderId, orders]);
 
   const createOrder = () => {
-    if (Object.values(newOrder).some((value) => value.trim() === "")) {
+    if (Object.values(newOrder).some((value) => String(value).trim() === "")) {
       alert("Please fill out all order information.");
       return;
     }
 
-    const updatedOrders = [...orders, { id: Date.now(), ...newOrder }];
+    const updatedOrders = [
+      ...orders,
+      { id: Date.now(), ...newOrder, completed: false, cancelled: false },
+    ];
     setOrders(updatedOrders);
 
     // Update local storage after setting orders
@@ -80,11 +83,6 @@ function App() {
   };
 
   const updateOrder = () => {
-    if (Object.values(updatedOrder).some((value) => value.trim() === "")) {
-      alert("Please fill out all updated order information.");
-      return;
-    }
-
     if (selectedOrderId !== null) {
       const updatedOrders = orders.map((order) =>
         order.id === selectedOrderId ? { ...order, ...updatedOrder } : order
@@ -105,16 +103,44 @@ function App() {
     }
   };
 
+  const markCompleted = (id) => {
+    const completedOrders = orders.map((order) =>
+      order.id === id ? { ...order, completed: true } : order
+    );
+    setOrders(completedOrders);
+
+    localStorage.setItem("orders", JSON.stringify(completedOrders));
+  };
+
+  const markCancelled = (id) => {
+    const cancelledOrders = orders.map((order) =>
+      order.id === id ? { ...order, cancelled: true } : order
+    );
+    setOrders(cancelledOrders);
+
+    localStorage.setItem("orders", JSON.stringify(cancelledOrders));
+  };
+
+  const deleteCompletedOrders = () => {
+    const incompleteOrders = orders.filter((order) => !order.completed);
+    setOrders(incompleteOrders);
+
+    localStorage.setItem("orders", JSON.stringify(incompleteOrders));
+  };
+
+  const pendingOrders = orders.filter(
+    (order) => !order.completed && !order.cancelled
+  );
+  const cancelledOrders = orders.filter((order) => order.cancelled);
+
   return (
     <div className="app">
-      <div className="header"></div>
-
       <h1>Order Management App</h1>
 
       <div className="order-section">
         <h2>Create Order</h2>
         <div className="input-group">
-          <label>Kind of Food:</label>
+          <label>Type of food:</label>
           <input
             type="text"
             value={newOrder.kindOfFood}
@@ -144,7 +170,7 @@ function App() {
           />
         </div>
         <div className="input-group">
-          <label>Personal Information:</label>
+          <label>Client Names</label>
           <input
             type="text"
             value={newOrder.personalInfo}
@@ -154,7 +180,7 @@ function App() {
           />
         </div>
         <div className="input-group">
-          <label>Phone Number:</label>
+          <label>Phone:</label>
           <input
             type="text"
             value={newOrder.phoneNumber}
@@ -164,7 +190,7 @@ function App() {
           />
         </div>
         <div className="input-group">
-          <label>Address:</label>
+          <label>Location:</label>
           <input
             type="text"
             value={newOrder.address}
@@ -173,7 +199,9 @@ function App() {
             }
           />
         </div>
-        <button onClick={createOrder}>Create Order</button>
+        <button id="button1" onClick={createOrder}>
+          Create Order
+        </button>
       </div>
 
       <div className="order-section">
@@ -200,15 +228,143 @@ function App() {
                 <td>{order.phoneNumber}</td>
                 <td>{order.address}</td>
                 <td>
+                  <button id="button1" onClick={() => deleteOrder(order.id)}>
+                    Delete
+                  </button>
+                  <button
+                    id="button1"
+                    onClick={() => setSelectedOrderId(order.id)}
+                  >
+                    Update
+                  </button>
+                  {!order.completed && (
+                    <button
+                      id="button1"
+                      onClick={() => markCompleted(order.id)}
+                    >
+                      Mark Completed
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <button id="button1" onClick={deleteCompletedOrders}>
+          Delete Completed Orders
+        </button>
+      </div>
+
+      <div className="order-section">
+        <h2>Pending Orders</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Kind of Food</th>
+              <th>Quantity</th>
+              <th>Pickup Date and Time</th>
+              <th>Personal Information</th>
+              <th>Phone Number</th>
+              <th>Address</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pendingOrders.map((order) => (
+              <tr key={order.id}>
+                <td>{order.kindOfFood}</td>
+                <td>{order.quantity}</td>
+                <td>{order.pickupDateTime}</td>
+                <td>{order.personalInfo}</td>
+                <td>{order.phoneNumber}</td>
+                <td>{order.address}</td>
+                <td>
                   <button onClick={() => deleteOrder(order.id)}>Delete</button>
                   <button onClick={() => setSelectedOrderId(order.id)}>
                     Update
+                  </button>
+                  <button onClick={() => markCompleted(order.id)}>
+                    Mark Completed
+                  </button>
+                  <button onClick={() => markCancelled(order.id)}>
+                    Mark Cancelled
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="order-section">
+        <h2>Cancelled Orders</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Kind of Food</th>
+              <th>Quantity</th>
+              <th>Pickup Date and Time</th>
+              <th>Personal Information</th>
+              <th>Phone Number</th>
+              <th>Address</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cancelledOrders.map((order) => (
+              <tr key={order.id}>
+                <td>{order.kindOfFood}</td>
+                <td>{order.quantity}</td>
+                <td>{order.pickupDateTime}</td>
+                <td>{order.personalInfo}</td>
+                <td>{order.phoneNumber}</td>
+                <td>{order.address}</td>
+                <td>
+                  <button onClick={() => deleteOrder(order.id)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="order-section">
+        <h2>Completed Orders</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Kind of Food</th>
+              <th>Quantity</th>
+              <th>Pickup Date and Time</th>
+              <th>Personal Information</th>
+              <th>Phone Number</th>
+              <th>Address</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders
+              .filter((order) => order.completed && !order.cancelled)
+              .map((order) => (
+                <tr key={order.id}>
+                  <td>{order.kindOfFood}</td>
+                  <td>{order.quantity}</td>
+                  <td>{order.pickupDateTime}</td>
+                  <td>{order.personalInfo}</td>
+                  <td>{order.phoneNumber}</td>
+                  <td>{order.address}</td>
+                  <td>
+                    <button onClick={() => deleteOrder(order.id)}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+        <button id="button1" onClick={deleteCompletedOrders}>
+          Delete Completed Orders
+        </button>
       </div>
 
       {selectedOrderId !== null && (
@@ -292,14 +448,11 @@ function App() {
               }
             />
           </div>
-          <button onClick={updateOrder}>Update Order</button>
+          <button id="button1" onClick={updateOrder}>
+            Update Order
+          </button>
         </div>
       )}
-
-      <p className="read-the-docs">
-        This is a simple order management app using React. Click on the logos to
-        learn more.
-      </p>
     </div>
   );
 }
