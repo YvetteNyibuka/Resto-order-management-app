@@ -3,14 +3,20 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  color: black;
 }
 
 .app {
   width: 90%;
   margin: 50px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  background-color: #025a3c;
   font-family: Arial, sans-serif;
 }
 
@@ -21,24 +27,28 @@ body {
 
 .order-section {
   margin-bottom: 20px;
+  width: 80%;
 }
 
 .input-group {
   margin-bottom: 10px;
   display: flex;
+  width: 100%;
   flex-direction: column;
 }
 
 input {
   padding: 8px;
-  width: 90%;
+  width: 100%;
   box-sizing: border-box;
   margin-top: 5px;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: none;
 }
 
 /* button {
   padding: 8px 16px;
-  margin-top: 10px;
   cursor: pointer;
   background-color: red;
   color: black;
@@ -48,9 +58,10 @@ input {
 
 #button1 {
   padding: 0.8rem 2rem;
-  background-color: red;
+  background-color: #f7bd2b;
   border: none;
   border-radius: 0.5rem;
+  margin-top: 15px;
 }
 
 table {

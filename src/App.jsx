@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import { MdDoneOutline } from "react-icons/md";
+import { FaRegEdit } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { FcCancel } from "react-icons/fc";
 
 function App() {
   // Fetch orders from local storage on component mount
@@ -135,7 +139,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Order Management App</h1>
+      <h1 style={{ color: "#F66E4C" }}>Resto Order Management App</h1>
 
       <div className="order-section">
         <h2>Create Order</h2>
@@ -209,12 +213,12 @@ function App() {
         <table>
           <thead>
             <tr>
-              <th>Kind of Food</th>
-              <th>Quantity</th>
-              <th>Pickup Date and Time</th>
-              <th>Personal Information</th>
-              <th>Phone Number</th>
-              <th>Address</th>
+              <th>Food</th>
+              <th>Qty</th>
+              <th>Pickup Time</th>
+              <th>Names</th>
+              <th>Phone</th>
+              <th>Location</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -227,23 +231,20 @@ function App() {
                 <td>{order.personalInfo}</td>
                 <td>{order.phoneNumber}</td>
                 <td>{order.address}</td>
-                <td>
-                  <button id="button1" onClick={() => deleteOrder(order.id)}>
-                    Delete
-                  </button>
-                  <button
-                    id="button1"
+                <td id="actions">
+                  <RiDeleteBin6Line
+                    onClick={() => deleteOrder(order.id)}
+                    style={{ color: "#f7bd2b", fontSize: "2rem" }}
+                  />
+                  <FaRegEdit
                     onClick={() => setSelectedOrderId(order.id)}
-                  >
-                    Update
-                  </button>
+                    style={{ color: "#f7bd2b", fontSize: "2rem" }}
+                  />
                   {!order.completed && (
-                    <button
-                      id="button1"
+                    <MdDoneOutline
                       onClick={() => markCompleted(order.id)}
-                    >
-                      Mark Completed
-                    </button>
+                      style={{ color: "#f7bd2b", fontSize: "2rem" }}
+                    />
                   )}
                 </td>
               </tr>
@@ -251,7 +252,7 @@ function App() {
           </tbody>
         </table>
         <button id="button1" onClick={deleteCompletedOrders}>
-          Delete Completed Orders
+          Delete Orders
         </button>
       </div>
 
@@ -279,16 +280,22 @@ function App() {
                 <td>{order.phoneNumber}</td>
                 <td>{order.address}</td>
                 <td>
-                  <button onClick={() => deleteOrder(order.id)}>Delete</button>
-                  <button onClick={() => setSelectedOrderId(order.id)}>
-                    Update
-                  </button>
-                  <button onClick={() => markCompleted(order.id)}>
-                    Mark Completed
-                  </button>
-                  <button onClick={() => markCancelled(order.id)}>
-                    Mark Cancelled
-                  </button>
+                  <RiDeleteBin6Line
+                    onClick={() => deleteOrder(order.id)}
+                    style={{ color: "#f7bd2b", fontSize: "2rem" }}
+                  />
+                  <FaRegEdit
+                    onClick={() => setSelectedOrderId(order.id)}
+                    style={{ color: "#f7bd2b", fontSize: "2rem" }}
+                  />
+                  <MdDoneOutline
+                    onClick={() => markCompleted(order.id)}
+                    style={{ color: "#f7bd2b", fontSize: "2rem" }}
+                  />
+                  <FcCancel
+                    onClick={() => markCancelled(order.id)}
+                    style={{ color: "#f7bd2b", fontSize: "2rem" }}
+                  />
                 </td>
               </tr>
             ))}
@@ -320,7 +327,10 @@ function App() {
                 <td>{order.phoneNumber}</td>
                 <td>{order.address}</td>
                 <td>
-                  <button onClick={() => deleteOrder(order.id)}>Delete</button>
+                  <RiDeleteBin6Line
+                    onClick={() => deleteOrder(order.id)}
+                    style={{ color: "#f7bd2b", fontSize: "2rem" }}
+                  />
                 </td>
               </tr>
             ))}
@@ -354,9 +364,10 @@ function App() {
                   <td>{order.phoneNumber}</td>
                   <td>{order.address}</td>
                   <td>
-                    <button onClick={() => deleteOrder(order.id)}>
-                      Delete
-                    </button>
+                    <RiDeleteBin6Line
+                      onClick={() => deleteOrder(order.id)}
+                      style={{ color: "#f7bd2b", fontSize: "2rem" }}
+                    />
                   </td>
                 </tr>
               ))}
